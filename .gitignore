@@ -31,3 +31,7 @@ yarn-error.log*
 # OS files
 .DS_Store
 Thumbs.db
+
+#team helper files
+*.sh
+*.ps1

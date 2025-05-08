@@ -2,7 +2,7 @@ import express from "express"
 import cors from "cors"
 import dotenv from "dotenv"
 import userRoutes from "./routes/userRoutes"
-import testRoutes from "./routes/testRoute"
+import testRoutes from "./routes/testRoutes"
 import { version } from "os"
 
 dotenv.config()

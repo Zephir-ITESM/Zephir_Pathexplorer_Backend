@@ -1,3 +1,5 @@
+# Create .gitignore file
+cat > .gitignore << EOL
 # Dependencies
 /node_modules
 /.pnp
@@ -31,7 +33,7 @@ yarn-error.log*
 # OS files
 .DS_Store
 Thumbs.db
-
+EOL
 #team helper files
 *.sh
 *.ps1

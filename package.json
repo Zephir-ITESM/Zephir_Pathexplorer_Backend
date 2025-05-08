@@ -1,12 +1,12 @@
 {
   "name": "zephir_pathexplorer_backend",
-  "version": "1.0.0",
+  "version": "0.1.0",
   "main": "index.js",
   "scripts": {
-  "start": "node dist/index.js",
-  "dev": "nodemon src/index.ts",
-  "build": "tsc",
-  "lint": "eslint . --ext .ts"
+    "start": "node dist/index.js",
+    "dev": "nodemon src/index.ts",
+    "build": "tsc",
+    "lint": "eslint . --ext .ts"
 },
   "keywords": [],
   "author": "",

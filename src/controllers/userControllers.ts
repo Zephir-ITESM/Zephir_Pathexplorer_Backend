@@ -2,6 +2,7 @@ import type { Request, Response } from "express"
 import jwt from "jsonwebtoken"
 import { UserModel } from "../models/userModels"
 import { validateUserRegistration, validateUserLogin } from "../utils/validation"
+import e from "express"
 
 // Register a new user
 export const registerUser = async (req: Request, res: Response) => {
@@ -65,11 +66,15 @@ export const loginUser = async (req: Request, res: Response) => {
 
     // Generate JWT token
     const token = jwt.sign(
-      { idUsuario: user.idUsuario, correo: user.correo, tipoUsuario: user.tipoUsuario },
+      { 
+        id_usuario: user.id_usuario,
+        correo: user.correo, 
+        tipoUsuario: user.id_tipo_usuario 
+      },
       process.env.JWT_SECRET as string,
-      { expiresIn: "24h" },
+      { expiresIn: "24h" }
     )
-
+    
     // Remove password from response
     const { contraseña: _, ...userWithoutPassword } = user
 
@@ -83,7 +88,7 @@ export const loginUser = async (req: Request, res: Response) => {
 // Get user profile
 export const getUserProfile = async (req: Request, res: Response) => {
   try {
-    const userId = req.user?.idUsuario
+    const userId = req.user?.id_usuario
 
     if (!userId) {
       res.status(400).json({ error: "User ID is required" })
@@ -106,7 +111,7 @@ export const getUserProfile = async (req: Request, res: Response) => {
 // Update user profile
 export const updateUserProfile = async (req: Request, res: Response) => {
   try {
-    const userId = req.user?.idUsuario
+    const userId = req.user?.id_usuario
 
     if (!userId) {
       res.status(400).json({ error: "User ID is required" })
@@ -114,10 +119,10 @@ export const updateUserProfile = async (req: Request, res: Response) => {
     }
 
     // Only allow updating certain fields
-    const { tipoUsuario, contraseña } = req.body
+    const { id_tipo_usuario, contraseña } = req.body
     const updateData: any = {}
 
-    if (tipoUsuario) updateData.tipoUsuario = tipoUsuario
+    if (id_tipo_usuario) updateData.tipoUsuario = id_tipo_usuario // hubo otro cambio aqui porque nuevamente son tipos de usuario almacenados en otra tabla
     if (contraseña) updateData.contraseña = contraseña
 
     // Update user
@@ -136,7 +141,7 @@ export const updateUserProfile = async (req: Request, res: Response) => {
 // Delete user account
 export const deleteUserAccount = async (req: Request, res: Response) => {
   try {
-    const userId = req.user?.idUsuario
+    const userId = req.user?.id_usuario
 
     if (!userId) {
       res.status(400).json({ error: "User ID is required" })
@@ -151,4 +156,5 @@ export const deleteUserAccount = async (req: Request, res: Response) => {
     res.status(500).json({ error: error.message || "Internal server error" })
   }
 }
+
 

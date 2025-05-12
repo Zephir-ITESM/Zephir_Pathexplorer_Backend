@@ -3,7 +3,7 @@ import { UserModel } from "../models/userModels"
 import { InteresModel } from "../models/path-carrera/interesModel"
 import { PrioridadModel } from "../models/path-carrera/prioridadModel"
 import { ObjetivoModel } from "../models/path-carrera/objetivoModel"
-import { validatePriority, validateInteres, validateObjetivo } from "../utils/pathCarreraValidation"
+import { validatePriority_Objetivo_Interes } from "../utils/pathCarreraValidation"
 import e from "express"
 
 
@@ -13,18 +13,25 @@ export const addPriority = async (req: Request, res: Response) => {
     try {
         console.log("Add user priority request body:", req.body)
 
+        const id_usuario = req.user?.id_usuario
+
+        if (!id_usuario) {
+            res.status(400).json({ error: "User ID is required" })
+            return
+        }
+
         // Validate input
-        const validation = validatePriority(req.body)
+        const validation = validatePriority_Objetivo_Interes(req.body)
         if (!validation.isValid) {
             res.status(400).json({ error: validation.errors.join(", ") })
             return
         }
 
-        const { nombre, usuario_id } = req.body
+        const nombre = req.body
 
         // Create user priority
-        const newPriority = await PrioridadModel.create({ nombre, usuario_id })
-
+        const newPriority = await PrioridadModel.create({ nombre, usuario_id: id_usuario })
+        console.log("New priority created:", newPriority)
         res.status(201).json(newPriority)
     } catch (error: any) {
         console.error("Error al agregar prioridad al usuario:", error.message);
@@ -33,15 +40,17 @@ export const addPriority = async (req: Request, res: Response) => {
 }
 
 // obtener prioridades del usuario
-export const getUserPriorities = async (req: Request, res: Response) => {
+export const getMyPriorities = async (req: Request, res: Response) => {
     try {
-        const { idUsuario } = req.params
+        const userId = req.user?.id_usuario
 
-        if (!idUsuario) {
-            return res.status(400).json({ error: "Falta el parámetro idUsuario" })
+        if (!userId) {
+            res.status(400).json({ error: "User ID is required" })
+            return
         }
+        
 
-        const prioridades = await PrioridadModel.findByUser(idUsuario)
+        const prioridades = await PrioridadModel.findByUser(userId)
         return res.status(200).json(prioridades)
     } catch (error: any) {
         console.error("Error al obtener prioridades del usuario:", error.message)
@@ -54,17 +63,25 @@ export const addInteres = async (req: Request, res: Response) => {
     try {
         console.log("Add user interest request body:", req.body)
 
+        const userId = req.user?.id_usuario
+
+        if (!userId) {
+            res.status(400).json({ error: "User ID is required" })
+            return
+        }
+
+
         // Validate input
-        const validation = validateInteres(req.body)
+        const validation = validatePriority_Objetivo_Interes(req.body)
         if (!validation.isValid) {
             res.status(400).json({ error: validation.errors.join(", ") })
             return
         }
 
-        const { nombre, usuario_id } = req.body
+        const { nombre } = req.body
 
         // Create user interest
-        const newInterest = await InteresModel.create({ nombre, usuario_id })
+        const newInterest = await InteresModel.create({ nombre, usuario_id: userId })
 
         res.status(201).json(newInterest)
     } catch (error: any) {
@@ -74,15 +91,16 @@ export const addInteres = async (req: Request, res: Response) => {
 }
 
 // obtener intereses del usuario
-export const getUserInterests = async (req: Request, res: Response) => {
+export const getMyIntereses = async (req: Request, res: Response) => {
     try {
-        const { idUsuario } = req.params
+        const userId = req.user?.id_usuario
 
-        if (!idUsuario) {
-            return res.status(400).json({ error: "Falta el parámetro idUsuario" })
+        if (!userId) {
+            res.status(400).json({ error: "User ID is required" })
+            return
         }
 
-        const intereses = await InteresModel.findByUser(idUsuario)
+        const intereses = await InteresModel.findByUser(userId)
         return res.status(200).json(intereses)
     } catch (error: any) {
         console.error("Error al obtener intereses del usuario:", error.message)
@@ -96,17 +114,25 @@ export const addObjetivo = async (req: Request, res: Response) => {
     try {
         console.log("Add user objective request body:", req.body)
 
+        const userId = req.user?.id_usuario
+
+        if (!userId) {
+            res.status(400).json({ error: "User ID is required" })
+            return
+        }
+
+
         // Validate input
-        const validation = validateObjetivo(req.body)
+        const validation = validatePriority_Objetivo_Interes(req.body)
         if (!validation.isValid) {
             res.status(400).json({ error: validation.errors.join(", ") })
             return
         }
 
-        const { objetivo, usuario_id } = req.body
+        const { objetivo } = req.body
 
         // Create user objective
-        const newObjective = await ObjetivoModel.create({ objetivo, usuario_id })
+        const newObjective = await ObjetivoModel.create({ objetivo, usuario_id: userId })
 
         res.status(201).json(newObjective)
     } catch (error: any) {
@@ -116,15 +142,16 @@ export const addObjetivo = async (req: Request, res: Response) => {
 }
 
 // obtener objetivos del usuario
-export const getUserObjetivos = async (req: Request, res: Response) => {
+export const getMyObjetivos = async (req: Request, res: Response) => {
     try {
-        const { idUsuario } = req.params
+        const userId = req.user?.id_usuario
 
-        if (!idUsuario) {
-            return res.status(400).json({ error: "Falta el parámetro idUsuario" })
+        if (!userId) {
+            res.status(400).json({ error: "User ID is required" })
+            return
         }
 
-        const objetivos = await ObjetivoModel.findByUser(idUsuario)
+        const objetivos = await ObjetivoModel.findByUser(userId)
         return res.status(200).json(objetivos)
     } catch (error: any) {
         console.error("Error al obtener objetivos del usuario:", error.message)

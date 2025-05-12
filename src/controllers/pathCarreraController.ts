@@ -3,7 +3,7 @@ import { UserModel } from "../models/userModels"
 import { InteresModel } from "../models/path-carrera/interesModel"
 import { PrioridadModel } from "../models/path-carrera/prioridadModel"
 import { ObjetivoModel } from "../models/path-carrera/objetivoModel"
-import { validatePriority_Objetivo_Interes } from "../utils/pathCarreraValidation"
+import { validatePriority_Objetivo_Interes} from "../utils/pathCarreraValidation"
 import e from "express"
 
 

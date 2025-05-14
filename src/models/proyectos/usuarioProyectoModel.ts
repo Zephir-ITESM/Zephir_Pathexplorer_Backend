@@ -15,17 +15,18 @@ export class UsuarioProyectoModel {
         return result[0] as UsuarioProyecto;
     }
 
-    static async findById(id: number): Promise<UsuarioProyecto[]> {
+    static async findById(id: number): Promise<UsuarioProyecto | null> {
         const { data, error } = await supabase
             .from("usuario_proyecto")
             .select("*")
-            .eq("id", id);
+            .eq("id", id)
+            .single();
 
         if (error) {
             throw new Error(`Error encontrando usuario proyecto con ese id: ${error.message}`);
         }
 
-        return data as UsuarioProyecto[];
+        return data as UsuarioProyecto;
     }
 
     static async findByUser(idUsuario: string): Promise<UsuarioProyecto[]> {
@@ -55,7 +56,7 @@ export class UsuarioProyectoModel {
         return data as UsuarioProyecto[];
     }
 
-    static async findByProyectoUsuario(idUsuario: string, idProyecto: string): Promise<UsuarioProyecto[]> {
+    static async findByProyectoUsuario(idUsuario: string, idProyecto: string): Promise<UsuarioProyecto[] | null> {
         const { data, error } = await supabase
             .from("usuario_proyecto")
             .select("*")
@@ -63,7 +64,7 @@ export class UsuarioProyectoModel {
             .eq("id_proyecto", idProyecto);
 
         if (error) {
-            throw new Error(`Error encontrando usuario proyecto con ese id de usuario y proyecto: ${error.message}`);
+            return null;
         }
 
         return data as UsuarioProyecto[];

@@ -4,6 +4,9 @@ import e from "express"
 import { ProyectoModel } from "../models/proyectos/proyectoModel"
 import { validateProject, validateUserProject } from "../utils/proyectosValidation"
 import { UsuarioProyectoModel } from "../models/proyectos/usuarioProyectoModel"
+import { UserModel } from "../models/userModels"
+import { TipoUsuarioModel } from "../models/tipoUsuarioModel"
+import { RolModel } from "../models/proyectos/rolModel"
 
 // obtener proyectos de un usuario
 export const getUserProjects = async (req: Request, res: Response) => {
@@ -29,6 +32,17 @@ export const getProjectsByDeliveryLead = async (req: Request, res: Response) => 
 
         if (!idDeliveryLead) {
             return res.status(400).json({ error: "Falta el parámetro idDeliveryLead" })
+        }
+
+        // Verificar que exista el delivery lead
+        const idTipoUsuario = await UserModel.findTipoUsuarioById(idDeliveryLead)
+        if (idTipoUsuario === null) {
+            return res.status(400).json({ error: "Id delivery lead inválido" })
+        }
+
+        const tipoUsuario = await TipoUsuarioModel.findById(idTipoUsuario)
+        if (tipoUsuario?.nombre === "Delivery Lead") {
+            return res.status(400).json({ error: "El id proporcionado no corresponde a un Delivery Lead" })
         }
 
         const proyectos = await ProyectoModel.findByPeopleLead(idDeliveryLead)
@@ -61,6 +75,13 @@ export const addProjectToUser = async (req: Request, res: Response) => {
     try {
         console.log("Add project to user request body:", req.body)
 
+        const userId = req.user?.id_usuario
+
+        if (!userId) {
+            res.status(400).json({ error: "User ID is required" })
+            return
+        }
+
         // Validate input
         const validation = validateUserProject(req.body)
         if (!validation.isValid) {
@@ -68,14 +89,29 @@ export const addProjectToUser = async (req: Request, res: Response) => {
             return
         }
 
-        // implementar la logica para validar que el usuario no tenga el proyecto asignado ya
-        // implementar la logica para validar que el proyecto exista
-        // implementar la logica para validar que el rol exista
-        // implementar la logica para cuando el proyecto todavia no tiene feedback y calificacion, se le asignen valores por defecto
-        const { id_usuario, id_proyecto, id_rol, feedback, calificacion } = req.body
+        // validar que el usuario no tenga el proyecto asignado ya
+        const {id_proyecto, id_rol} = req.body
+
+        // validar que el usuario no tenga el proyecto asignado ya
+        if (UsuarioProyectoModel.findByProyectoUsuario(userId, id_proyecto) != null) {
+            return res.status(400).json({ error: "El usuario ya tiene el proyecto asignado" })
+        }
+
+
+        //  validar que el proyecto exista
+        const proyecto = await ProyectoModel.findById(id_proyecto)
+        if (!proyecto) {
+            return res.status(400).json({ error: "El proyecto no existe" })
+        }
+
+        // validar que el rol exista
+        const rol = await RolModel.findById(id_rol)
+        if (!rol) {
+            return res.status(400).json({ error: "El rol no existe" })
+        }
 
         // Create user project
-        const newProject = await UsuarioProyectoModel.create({ id_usuario, id_proyecto, id_rol, feedback, calificacion })
+        const newProject = await UsuarioProyectoModel.create({ id_usuario: userId, id_proyecto, id_rol, feedback: undefined, calificacion: 0 })
 
         res.status(201).json(newProject)
     } catch (error: any) {

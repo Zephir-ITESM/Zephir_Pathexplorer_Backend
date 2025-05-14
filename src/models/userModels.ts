@@ -73,6 +73,26 @@ export class UserModel {
   }
 
   /**
+   * Obtain id_tipo_usuario by id_usuario
+   */
+  static async findTipoUsuarioById(id: string): Promise<number | null> {
+    const { data, error } = await supabase
+      .from("usuario")
+      .select("id_tipo_usuario")
+      .eq("id_usuario", id)
+      .single()
+
+    if (error) {
+      if (error.code === "PGRST116") {
+        return null
+      }
+      throw new Error(`Error finding user: ${error.message}`)
+    }
+
+    return data.id_tipo_usuario as number
+  }
+
+  /**
    * Update a user
    */
   static async update(id: string, userData: Partial<UserInput>): Promise<User> {

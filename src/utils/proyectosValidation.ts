@@ -57,13 +57,6 @@ export function validateProject(data: any): { isValid: boolean; errors: string[]
 export function validateUserProject(data: any): { isValid: boolean; errors: string[] } {
     const errors: string[] = []
 
-        // Validar id_usuario del proyecto
-        if (!data.id_usuario) {
-            errors.push("El id_usuario del proyecto es obligatorio")
-        } else if (typeof data.id_usuario !== "string") {
-            errors.push("El id_usuario del proyecto debe ser una cadena de texto")
-        }
-
         // Validar id_proyecto del proyecto
         if (!data.id_proyecto) {
             errors.push("El id_proyecto del proyecto es obligatorio")

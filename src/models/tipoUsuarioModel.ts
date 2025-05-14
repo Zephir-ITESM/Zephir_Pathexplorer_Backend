@@ -15,17 +15,18 @@ export class TipoUsuarioModel {
         return result[0] as TipoUsuario;
     }
 
-    static async findById(id: number): Promise<TipoUsuario[]> {
+    static async findById(id: number): Promise<TipoUsuario | null> {
         const { data, error } = await supabase
             .from("tipo_usuario")
             .select("*")
-            .eq("id_tipo_usuario", id);
+            .eq("id_tipo_usuario", id)
+            .single();
 
         if (error) {
             throw new Error(`Error encontrando tipo usuario con ese id: ${error.message}`);
         }
 
-        return data as TipoUsuario[];
+        return data as TipoUsuario
     }
 
     static async findByName(name: string): Promise<TipoUsuario[]> {

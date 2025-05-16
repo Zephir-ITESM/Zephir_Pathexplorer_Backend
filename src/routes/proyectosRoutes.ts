@@ -8,9 +8,9 @@ const router = Router();
 // Protected routes
 router.post('/user/proyectoUsuario', authenticateToken, addProjectToUser);
 router.post('/user/proyecto', authenticateToken, addProject);
-router.get('/user/proyectos/:idUsuario', authenticateToken, getUserProjects);
-router.get('/user/proyectos/deliverylead/:idDeliveryLead', authenticateToken, getProjectsByDeliveryLead);
-router.get('/user/proyectos/:idProyecto/usuarios', authenticateToken, getProjectAssignedUsers);
+router.get('/user/mis-proyectos', authenticateToken, getUserProjects);
+router.get('/user/proyectos/deliverylead', authenticateToken, getProjectsByDeliveryLead);
+router.get('/user/proyectos/usuarios', authenticateToken, getProjectAssignedUsers);
 
 // falta implementar la parte de confirmar permisos para poder ejecutar el endpoint de agregar un proyecto a un usuario
 

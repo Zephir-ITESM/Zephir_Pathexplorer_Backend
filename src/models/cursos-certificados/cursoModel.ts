@@ -15,17 +15,18 @@ export class CursoModel {
         return result[0] as Curso;
     }
 
-    static async findById(id: number): Promise<Curso[]> {
+    static async findById(id: number): Promise<Curso | null> {
         const { data, error } = await supabase
         .from("cursos")
         .select("*")
-        .eq("id_curso", id);
+        .eq("id_curso", id)
+        .single();
 
         if (error) {
             throw new Error(`Error encontrando curso con ese id: ${error.message}`);
         }
 
-        return data as Curso[];
+        return data as Curso
     }
 
     static async findByName(nombre: string): Promise<Curso[]> {

@@ -48,6 +48,24 @@ export class UsuarioEducacionService {
     return certificaciones;
   }
 
+  static async getCourseDetails(courseId: number) {
+    const curso = await CursoModel.findById(courseId);
+    if (!curso) {
+      throw new Error("Curso no encontrado");
+    }
+
+    const cursoSkills = await CursoSkillModel.findByCurso(courseId);
+    const skills = [];
+    for (const cs of cursoSkills) {
+      const skill = await SkillModel.findById(cs.id_skill);
+      if (skill) skills.push(skill);
+    }
+    return {
+      ...curso,
+      skills
+    };
+  }
+
   // falta implementar la logica para usuario_cursos
 }
 

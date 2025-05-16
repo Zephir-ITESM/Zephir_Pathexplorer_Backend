@@ -35,10 +35,6 @@ export function validateAddCourse(data: any): { isValid: boolean; errors: string
       errors.push("El nombre de la certificación es obligatorio")
     }
 
-    if (!data.id_usuario) {
-        errors.push("El id del usuario es obligatorio")
-    }
-  
 
     if (!data.expedicion) {
         errors.push("La fecha de caducidad es obligatoria")
@@ -73,10 +69,6 @@ export function validateAddCourse(data: any): { isValid: boolean; errors: string
   export function validateAddUserCourse(data: any): { isValid: boolean; errors: string[] } {
     const errors: string[] = []
 
-    // Validar userId
-    if (!data.usuario_id) {
-      errors.push("El userId es obligatorio")
-    }
   
     // Validar cursoId
     if (!data.id_curso) {

@@ -12,6 +12,13 @@ export const addUserCourse = async (req: Request, res: Response) => {
     try {
         console.log("Add user course request body:", req.body)
 
+        const userId = req.user?.id_usuario
+
+        if (!userId) {
+            res.status(400).json({ error: "User ID is required" })
+            return
+        }
+
         // Validate input
         const validation = validateAddUserCourse(req.body)
         if (!validation.isValid) {
@@ -19,11 +26,17 @@ export const addUserCourse = async (req: Request, res: Response) => {
             return
         }
 
-        const { usuario_id, id_curso } = req.body
+        const { id_curso } = req.body
+
+        // validadar que el curso existe
+        const curso = await CursoModel.findById(id_curso)
+        if (!curso) {
+            return res.status(404).json({ error: "Curso no encontrado" })
+        }
 
         // Create user course
         const fecha_inicio = new Date().toISOString();
-        const newCourse = await UsuarioCursoModel.create({ usuario_id, id_curso, fecha_inicio })
+        const newCourse = await UsuarioCursoModel.create({ usuario_id: userId, id_curso, fecha_inicio })
 
         res.status(201).json(newCourse)
     } catch (error: any) {
@@ -36,6 +49,13 @@ export const addCertification = async (req: Request, res: Response) => {
     try {
         console.log("Add user certification request body:", req.body)
 
+        const userId = req.user?.id_usuario
+
+        if (!userId) {
+            res.status(400).json({ error: "User ID is required" })
+            return
+        }
+
         // Validate input
         const validation = validateAddCertification(req.body)
         if (!validation.isValid) {
@@ -43,9 +63,9 @@ export const addCertification = async (req: Request, res: Response) => {
             return
         }
 
-        const { id_usuario, nombre, link, expedicion, caducidad } = req.body
+        const { nombre, link, expedicion, caducidad } = req.body
 
-        const newCertification = await CertificacionModel.create({ id_usuario, nombre, link, expedicion, caducidad})
+        const newCertification = await CertificacionModel.create({ id_usuario: userId, nombre, link, expedicion, caducidad})
 
         res.status(201).json(newCertification)
     } catch (error: any) {
@@ -54,12 +74,45 @@ export const addCertification = async (req: Request, res: Response) => {
     }
 }
 
+export const getCertificationDetails = async (req: Request, res: Response) => {
+    try {
+        const {id_certificado} = req.params
+        
+        const certificado = await CertificacionModel.findById(parseInt(id_certificado))
+        if (!certificado) {
+            return res.status(404).json({ error: "Certificación no encontrada" })
+        }
+
+        return res.status(200).json(certificado)
+    } catch (error: any) {
+        console.error("Error al obtener detalles de la certificación:", error.message)
+        return res.status(500).json({ error: "Error del servidor" })
+    }
+}
+
+export const getCourseDetails = async (req: Request, res: Response) => {
+    try {
+        const {id_curso} = req.params
+        
+        const curso = await UsuarioEducacionService.getCourseDetails(parseInt(id_curso))
+        if (!curso) {
+            return res.status(404).json({ error: "Curso no encontrado" })
+        }
+
+        return res.status(200).json(curso)
+    } catch (error: any) {
+        console.error("Error al obtener detalles del curso:", error.message)
+        return res.status(500).json({ error: "Error del servidor" })
+    }
+}
+
 export const getUserCourses = async (req: Request, res: Response) => {
     try {
-        const { userId } = req.params
+        const userId = req.user?.id_usuario
 
         if (!userId) {
-            return res.status(400).json({ error: "Falta el parámetro userId" })
+            res.status(400).json({ error: "User ID is required" })
+            return
         }
 
         const cursos = await UsuarioEducacionService.getUserCourses(userId)
@@ -72,10 +125,11 @@ export const getUserCourses = async (req: Request, res: Response) => {
 
 export const getUserCertifications = async (req: Request, res: Response) => {
     try {
-        const { userId } = req.params
+        const userId = req.user?.id_usuario
 
         if (!userId) {
-            return res.status(400).json({ error: "Falta el parámetro userId" })
+            res.status(400).json({ error: "User ID is required" })
+            return
         }
 
         const certificaciones = await UsuarioEducacionService.getUserCertifications(userId)

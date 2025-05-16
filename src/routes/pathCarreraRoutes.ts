@@ -9,7 +9,7 @@ const router = Router();
 router.post('/user/add-prioridad', authenticateToken, addPriority);
 router.post('/user/add-interes', authenticateToken, addInteres);
 router.post('/user/add-objetivo', authenticateToken, addObjetivo);
-router.get('/user/mis-prioridades/', authenticateToken, getMyPriorities);
+router.get('/user/mis-prioridades', authenticateToken, getMyPriorities);
 router.get('/user/mis-intereses', authenticateToken, getMyIntereses);
 router.get('/user/mis-objetivos', authenticateToken, getMyObjetivos);
 

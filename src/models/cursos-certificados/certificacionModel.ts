@@ -28,17 +28,18 @@ export class CertificacionModel {
         return data as Certificado[]
     }
 
-    static async findById(id: number): Promise<Certificado[]> {
+    static async findById(id: number): Promise<Certificado | null> {
         const { data, error } = await supabase
         .from("certificado")
         .select("*")
         .eq("id_certificado", id)
+        .single()
     
         if (error) {
         throw new Error(`Error encontrando certificación con ese id: ${error.message}`)
         }
     
-        return data as Certificado[]
+        return data as Certificado
     }
 
     static async delete(id: number): Promise<void> {

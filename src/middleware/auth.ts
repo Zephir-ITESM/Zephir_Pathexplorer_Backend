@@ -1,11 +1,13 @@
 import type { Request, Response, NextFunction } from "express"
 import jwt from "jsonwebtoken"
+import { getAuthenticatedClient } from "../config/supabase"
 
-// Extend the Request interface to include user
+// Extend the Request interface to include user and supabaseAuth
 declare global {
   namespace Express {
     interface Request {
       user: any
+      supabaseAuth: ReturnType<typeof getAuthenticatedClient>
     }
   }
 }
@@ -22,6 +24,10 @@ export const authenticateToken = (req: Request, res: Response, next: NextFunctio
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET as string)
     req.user = decoded
+    
+    // Create an authenticated Supabase client with the user's token
+    req.supabaseAuth = getAuthenticatedClient(token)
+    
     console.log("Decoded token:", decoded)
     next()
   } catch (error) {
@@ -29,4 +35,3 @@ export const authenticateToken = (req: Request, res: Response, next: NextFunctio
     return
   }
 }
-

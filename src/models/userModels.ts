@@ -1,21 +1,23 @@
 import { supabase } from "../config/supabase"
 import type { User, UserInput } from "../types/user"
+import type { SupabaseClient } from "@supabase/supabase-js"
 import bcrypt from "bcrypt"
+import { BaseModel } from "./baseModel"
 
-export class UserModel {
+export class UserModel extends BaseModel {
   /**
    * Create a new user
    */
-  static async create(userData: UserInput): Promise<User> {
+  static async create(userData: UserInput, authClient?: SupabaseClient): Promise<User> {
     // Hash the password
     const hashedPassword = await bcrypt.hash(userData.contraseña, 10)
 
     // Insert user into database
-    const { data, error } = await supabase
+    const { data, error } = await this.getClient(authClient)
       .from("usuario")
       .insert([
         {
-          id_tipo_usuario: userData.id_tipo_usuario, // Aseguramos que coincidan las claves de la base de datos
+          id_tipo_usuario: userData.id_tipo_usuario,
           correo: userData.correo,
           contraseña: hashedPassword,
           profesion: userData.profesion,
@@ -38,8 +40,12 @@ export class UserModel {
   /**
    * Find a user by email
    */
-  static async findByEmail(email: string): Promise<User | null> {
-    const { data, error } = await supabase.from("usuario").select("*").eq("correo", email).single()
+  static async findByEmail(email: string, authClient?: SupabaseClient): Promise<User | null> {
+    const { data, error } = await this.getClient(authClient)
+      .from("usuario")
+      .select("*")
+      .eq("correo", email)
+      .single()
 
     if (error) {
       if (error.code === "PGRST116") {
@@ -55,11 +61,11 @@ export class UserModel {
   /**
    * Find a user by ID
    */
-  static async findById(id: string): Promise<User | null> {
-    const { data, error } = await supabase
+  static async findById(id: string, authClient?: SupabaseClient): Promise<User | null> {
+    const { data, error } = await this.getClient(authClient)
       .from("usuario")
       .select("id_usuario, id_tipo_usuario, correo, created_at")
-      .eq("id_usuario", id)  // Usamos 'id_usuario' en lugar de 'idUsuario'
+      .eq("id_usuario", id)
       .single()
 
     if (error) {
@@ -75,8 +81,8 @@ export class UserModel {
   /**
    * Obtain id_tipo_usuario by id_usuario
    */
-  static async findTipoUsuarioById(id: string): Promise<number | null> {
-    const { data, error } = await supabase
+  static async findTipoUsuarioById(id: string, authClient?: SupabaseClient): Promise<number | null> {
+    const { data, error } = await this.getClient(authClient)
       .from("usuario")
       .select("id_tipo_usuario")
       .eq("id_usuario", id)
@@ -95,13 +101,17 @@ export class UserModel {
   /**
    * Update a user
    */
-  static async update(id: string, userData: Partial<UserInput>): Promise<User> {
+  static async update(id: string, userData: Partial<UserInput>, authClient?: SupabaseClient): Promise<User> {
     // If password is being updated, hash it
     if (userData.contraseña) {
       userData.contraseña = await bcrypt.hash(userData.contraseña, 10)
     }
 
-    const { data, error } = await supabase.from("usuario").update(userData).eq("id_usuario", id).select()
+    const { data, error } = await this.getClient(authClient)
+      .from("usuario")
+      .update(userData)
+      .eq("id_usuario", id)
+      .select()
 
     if (error) {
       throw new Error(`Error updating user: ${error.message}`)
@@ -113,8 +123,11 @@ export class UserModel {
   /**
    * Delete a user
    */
-  static async delete(id: string): Promise<void> {
-    const { error } = await supabase.from("usuario").delete().eq("id_usuario", id)  // Usamos 'id_usuario'
+  static async delete(id: string, authClient?: SupabaseClient): Promise<void> {
+    const { error } = await this.getClient(authClient)
+      .from("usuario")
+      .delete()
+      .eq("id_usuario", id)
 
     if (error) {
       throw new Error(`Error deleting user: ${error.message}`)

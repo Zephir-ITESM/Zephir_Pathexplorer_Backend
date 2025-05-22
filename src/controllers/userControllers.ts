@@ -95,7 +95,8 @@ export const getUserProfile = async (req: Request, res: Response) => {
       return
     }
 
-    const user = await UserModel.findById(userId)
+    // Use the authenticated client from the request
+    const user = await UserModel.findById(userId, req.supabaseAuth)
     if (!user) {
       res.status(404).json({ error: "User not found" })
       return
@@ -122,11 +123,11 @@ export const updateUserProfile = async (req: Request, res: Response) => {
     const { id_tipo_usuario, contraseña } = req.body
     const updateData: any = {}
 
-    if (id_tipo_usuario) updateData.tipoUsuario = id_tipo_usuario // hubo otro cambio aqui porque nuevamente son tipos de usuario almacenados en otra tabla
+    if (id_tipo_usuario) updateData.tipoUsuario = id_tipo_usuario
     if (contraseña) updateData.contraseña = contraseña
 
-    // Update user
-    const updatedUser = await UserModel.update(userId, updateData)
+    // Update user using the authenticated client
+    const updatedUser = await UserModel.update(userId, updateData, req.supabaseAuth)
 
     // Remove password from response
     const { contraseña: _, ...userWithoutPassword } = updatedUser
@@ -148,7 +149,8 @@ export const deleteUserAccount = async (req: Request, res: Response) => {
       return
     }
 
-    await UserModel.delete(userId)
+    // Delete user using the authenticated client
+    await UserModel.delete(userId, req.supabaseAuth)
 
     res.status(200).json({ message: "User account deleted successfully" })
   } catch (error: any) {
@@ -156,5 +158,3 @@ export const deleteUserAccount = async (req: Request, res: Response) => {
     res.status(500).json({ error: error.message || "Internal server error" })
   }
 }
-
-

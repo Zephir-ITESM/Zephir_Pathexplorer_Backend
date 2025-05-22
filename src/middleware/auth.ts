@@ -34,7 +34,6 @@ export const authenticateToken = (req: Request, res: Response, next: NextFunctio
     res.status(403).json({ error: "Invalid or expired token" })
     return
   }
-<<<<<<< HEAD
 }
 
 
@@ -55,6 +54,4 @@ export function authorizeRole(roles: string[] = []) {
 
     next();
   };
-=======
->>>>>>> 760e563c740094603e657923680298bab3dc843e
 }

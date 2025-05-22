@@ -1,6 +1,6 @@
 export interface Proyecto {
     id_proyecto: number;
-    id_people_lead: string;
+    id_delivery_lead: string;
     nombre: string;
     descripcion: string;
     fecha_inicio: string;
@@ -12,7 +12,7 @@ export interface Proyecto {
   }
   
   export interface ProyectoInput {
-    id_people_lead: string;
+    id_delivery_lead: string;
     nombre: string;
     descripcion: string;
     fecha_inicio: string;

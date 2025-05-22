@@ -19,7 +19,7 @@ export class ProyectoModel {
         const { data, error } = await supabase
         .from("proyecto")
         .select("*")
-        .eq("id_people_lead", idPeopleLead);
+        .eq("id_delivery_lead", idPeopleLead);
     
         if (error) {
         throw new Error(`Error encontrando proyectos del people lead: ${error.message}`);

@@ -6,6 +6,7 @@ import testRoutes from "./routes/testRoutes"
 import pathRoutes from "./routes/pathCarreraRoutes"
 import proyectosRoutes from "./routes/proyectosRoutes"
 import userEducationRoutes from "./routes/userEducationRoutes"
+import solicitudesRoutes from "./routes/solicitudesRoutes"
 import { version } from "os"
 
 dotenv.config()
@@ -54,6 +55,7 @@ app.use("/api/path", pathRoutes)
 app.use("/api/proyectos", proyectosRoutes)
 app.use("/api/educacion", userEducationRoutes)
 app.use("/api/test", testRoutes)
+app.use("/api/solicitudes", solicitudesRoutes)
 
 // Health check route
 app.get("/health", (req, res) => {

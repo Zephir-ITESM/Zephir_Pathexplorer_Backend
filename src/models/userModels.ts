@@ -59,7 +59,7 @@ export class UserModel {
     const { data, error } = await supabase
       .from("usuario")
       .select("id_usuario, id_tipo_usuario, correo, created_at")
-      .eq("id_usuario", id)  // Usamos 'id_usuario' en lugar de 'idUsuario'
+      .eq("id_usuario", id)
       .single()
 
     if (error) {

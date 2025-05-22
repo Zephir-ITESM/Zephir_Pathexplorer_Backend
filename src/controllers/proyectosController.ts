@@ -132,10 +132,10 @@ export const addProject = async (req: Request, res: Response) => {
             return
         }
 
-        const { nombre, descripcion, fecha_inicio, fecha_fin, id_people_lead, cupo_limite, horas } = req.body
+        const { nombre, descripcion, fecha_inicio, fecha_fin, id_delivery_lead, cupo_limite, horas } = req.body
 
         // Create project
-        const newProject = await ProyectoModel.create({ nombre, descripcion, fecha_inicio, fecha_fin, id_people_lead, cupo_limite, horas })
+        const newProject = await ProyectoModel.create({ nombre, descripcion, fecha_inicio, fecha_fin, id_delivery_lead, cupo_limite, horas })
 
         res.status(201).json(newProject)
     } catch (error: any) {

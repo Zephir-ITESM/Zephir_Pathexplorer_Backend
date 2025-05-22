@@ -40,11 +40,11 @@ export function validateProject(data: any): { isValid: boolean; errors: string[]
             errors.push("Las horas del proyecto deben ser un número positivo")
         }
 
-        // Validar id_people_lead del proyecto
-        if (!data.id_people_lead) {
-            errors.push("El id_people_lead del proyecto es obligatorio")
-        } else if (typeof data.id_people_lead !== "string") {
-            errors.push("El id_people_lead del proyecto debe ser una cadena de texto")
+        // Validar id_delivery_lead del proyecto
+        if (!data.id_delivery_lead) {
+            errors.push("El id_delivery_lead del proyecto es obligatorio")
+        } else if (typeof data.id_delivery_lead !== "string") {
+            errors.push("El id_delivery_lead del proyecto debe ser una cadena de texto")
         }
 
         return {

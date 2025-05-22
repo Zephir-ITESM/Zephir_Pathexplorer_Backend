@@ -56,7 +56,7 @@ export class UsuarioProyectoModel {
         return data as UsuarioProyecto[];
     }
 
-    static async findByProyectoUsuario(idUsuario: string, idProyecto: string): Promise<UsuarioProyecto[] | null> {
+    static async findByProyectoUsuario(idUsuario: string, idProyecto: number): Promise<UsuarioProyecto[] | null> {
         const { data, error } = await supabase
             .from("usuario_proyecto")
             .select("*")

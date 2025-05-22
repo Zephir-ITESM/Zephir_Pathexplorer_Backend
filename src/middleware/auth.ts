@@ -35,23 +35,3 @@ export const authenticateToken = (req: Request, res: Response, next: NextFunctio
     return
   }
 }
-
-
-// roles: array of allowed roles (e.g., ["admin", "Delivery Lead"])
-export function authorizeRole(roles: string[] = []) {
-  return (req: Request, res: Response, next: NextFunction) => {
-    // You should have user info attached to req (e.g., from authentication middleware)
-    const user = req.user;
-
-    if (!user) {
-      return res.status(401).json({ error: "No autenticado" });
-    }
-
-    // If roles are specified, check if user has one of them
-    if (roles.length && !roles.includes(user.rol)) {
-      return res.status(403).json({ error: "No autorizado" });
-    }
-
-    next();
-  };
-}

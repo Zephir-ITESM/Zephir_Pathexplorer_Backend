@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { addPriority, addInteres, addObjetivo, getMyIntereses, getMyObjetivos, getMyPriorities } from '../controllers/pathCarreraController';
+import { addPriority, addInteres, addObjetivo, getMyIntereses, getMyObjetivos, getMyPriorities, getCursosDePathCarrera } from '../controllers/pathCarreraController';
 import { authenticateToken } from '../middleware/auth';
 
 const router = Router();
@@ -12,6 +12,5 @@ router.post('/user/add-objetivo', authenticateToken, addObjetivo);
 router.get('/user/mis-prioridades', authenticateToken, getMyPriorities);
 router.get('/user/mis-intereses', authenticateToken, getMyIntereses);
 router.get('/user/mis-objetivos', authenticateToken, getMyObjetivos);
-
-
+router.get('/user/proyectos-semestre', authenticateToken, getCursosDePathCarrera);
 export default router;

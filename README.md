@@ -17,6 +17,7 @@ This is the backend API for the PathExplorer system, developed for Accenture's M
 - Node.js (v14 or higher)
 - npm or yarn
 - Supabase account
+- date-fns
 
 ### Installation
 

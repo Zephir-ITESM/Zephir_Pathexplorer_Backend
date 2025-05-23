@@ -17,7 +17,7 @@ export const addPriority = async (req: Request, res: Response) => {
         const id_usuario = req.user?.id_usuario
 
         if (!id_usuario) {
-            res.status(400).json({ error: "User ID is required" })
+            res.status(400).json({ error: "User ID is required", id_usuario})
             return
         }
 

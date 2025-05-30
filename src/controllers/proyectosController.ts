@@ -7,6 +7,7 @@ import { UsuarioProyectoModel } from "../models/proyectos/usuarioProyectoModel"
 import { UserModel } from "../models/userModels"
 import { TipoUsuarioModel } from "../models/tipoUsuarioModel"
 import { RolModel } from "../models/proyectos/rolModel"
+import { ProyectosEnPeriodosService } from "../services/proyectosEnPeriodos"
 
 // obtener proyectos de un usuario
 export const getUserProjects = async (req: Request, res: Response) => {
@@ -144,7 +145,79 @@ export const addProject = async (req: Request, res: Response) => {
     }
 }
 
+//Obtener proyectos de la semana
+export const getProyectosSemana = async (req: Request, res: Response) => {
+    try {
+        const userId = req.user?.id; // assuming `authenticateToken` attaches user to `req`
+        if (!userId) {
+            return res.status(401).json({ error: 'User not authenticated' });
+        }
 
+        const proyectos = await ProyectosEnPeriodosService.getProyectosSemana(userId);
+        res.status(200).json(proyectos);
+    } catch (error) {
+        res.status(500).json({ error: (error as Error).message });
+    }
+};
+
+// obtener proyectos del mes
+export const getProyectosMes = async (req: Request, res: Response) => {
+    try {
+        const userId = req.user?.id; // assuming `authenticateToken` attaches user to `req`
+        if (!userId) {
+            return res.status(401).json({ error: 'User not authenticated' });
+        }
+
+        const proyectos = await ProyectosEnPeriodosService.getProyectosMes(userId);
+        res.status(200).json(proyectos);
+    } catch (error) {
+        res.status(500).json({ error: (error as Error).message });
+    }
+};
+
+// obtener proyectos de los últimos 90 días
+export const getProyectosNoventaDias = async (req: Request, res: Response) => {
+    try {
+        const userId = req.user?.id; // assuming `authenticateToken` attaches user to `req`
+        if (!userId) {
+            return res.status(401).json({ error: 'User not authenticated' });
+        }
+
+        const proyectos = await ProyectosEnPeriodosService.getProyectosNoventaDias(userId);
+        res.status(200).json(proyectos);
+    } catch (error) {
+        res.status(500).json({ error: (error as Error).message });
+    }
+};
+
+// obtener proyectos del semestre
+export const getProyectosSemestre = async (req: Request, res: Response) => {
+    try {
+        const userId = req.user?.id; // assuming `authenticateToken` attaches user to `req`
+        if (!userId) {
+            return res.status(401).json({ error: 'User not authenticated' });
+        }
+
+        const proyectos = await ProyectosEnPeriodosService.getProyectosSemestre(userId);
+        res.status(200).json(proyectos);
+    } catch (error) {
+        res.status(500).json({ error: (error as Error).message });
+    }
+};
+// obtener los proyectos del año
+export const getProyectosAnio = async (req: Request, res: Response) => {
+    try {
+        const userId = req.user?.id; // assuming `authenticateToken` attaches user to `req`
+        if (!userId) {
+            return res.status(401).json({ error: 'User not authenticated' });
+        }
+
+        const proyectos = await ProyectosEnPeriodosService.getProyectosAnio(userId);
+        res.status(200).json(proyectos);
+    } catch (error) {
+        res.status(500).json({ error: (error as Error).message });
+    }
+};
 
 // obtener proyectos completados del usuario
 

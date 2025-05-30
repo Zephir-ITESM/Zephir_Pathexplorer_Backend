@@ -1,4 +1,5 @@
 import type { Request, Response } from "express"
+import { CursosCompletadosDePathService } from '../services/cursosCompletadosDePathService';
 import { UserModel } from "../models/userModels"
 import { InteresModel } from "../models/path-carrera/interesModel"
 import { PrioridadModel } from "../models/path-carrera/prioridadModel"
@@ -159,6 +160,21 @@ export const getMyObjetivos = async (req: Request, res: Response) => {
     }
 }
 
+//Obtener cursos del path de carrera del usuario y su estatus
+
+export const getCursosDePathCarrera = async (req: Request, res: Response) => {
+    try {
+        const userId = req.user?.id; // assuming `authenticateToken` attaches user to `req`
+        if (!userId) {
+            return res.status(401).json({ error: 'User not authenticated' });
+        }
+
+        const proyectos = await CursosCompletadosDePathService.getDePath(userId);
+        res.status(200).json(proyectos);
+    } catch (error) {
+        res.status(500).json({ error: (error as Error).message });
+    }
+};
 
 
 
